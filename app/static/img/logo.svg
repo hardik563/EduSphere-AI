@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48" fill="none">
+  <defs>
+    <linearGradient id="tealGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0d9488" />
+      <stop offset="100%" stop-color="#14b8a6" />
+    </linearGradient>
+    <linearGradient id="skyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0284c7" />
+      <stop offset="100%" stop-color="#38bdf8" />
+    </linearGradient>
+  </defs>
+  <!-- Background soft circle -->
+  <rect width="48" height="48" rx="14" fill="#f0fdfa"/>
+  <!-- Graduation cap base -->
+  <path d="M24 10L6 19L24 28L42 19L24 10Z" fill="url(#tealGrad)"/>
+  <!-- Cap body -->
+  <path d="M13 22.5V31.5C13 35.5 18 38 24 38C30 38 35 35.5 35 31.5V22.5" stroke="#0f766e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Tassel -->
+  <path d="M38 20V30.5C38 31.8 36.8 33 35.5 33" stroke="url(#skyGrad)" stroke-width="2" stroke-linecap="round"/>
+  <circle cx="35.5" cy="33" r="1.5" fill="#0284c7"/>
+  <!-- Sparkle AI star -->
+  <path d="M38 10L39 12.5L41.5 13.5L39 14.5L38 17L37 14.5L34.5 13.5L37 12.5L38 10Z" fill="#0ea5e9"/>
+</svg>

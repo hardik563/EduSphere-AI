@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EduSphere AI — Smart Student Management System</title>
+  <meta name="description" content="EduSphere AI is a modern student management platform with Python FastAPI, SQLite, and intelligent grounded AI assistant.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/style.css">
+  <link rel="icon" type="image/svg+xml" href="/static/img/logo.svg">
+</head>
+<body>
+
+<div class="app-layout">
+  <!-- Sidebar Navigation -->
+  <aside class="sidebar">
+    <div class="brand-section">
+      <div class="brand-logo">
+        <img src="/static/img/logo.svg" alt="EduSphere AI Logo" width="38" height="38">
+      </div>
+      <div class="brand-info">
+        <h1>EduSphere AI</h1>
+        <span class="brand-badge">FastAPI &bull; SQLite &bull; AI</span>
+      </div>
+    </div>
+
+    <ul class="nav-links">
+      <li>
+        <a href="#dashboard" class="nav-item active" data-tab="dashboard">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
+          <span>Dashboard</span>
+        </a>
+      </li>
+      <li>
+        <a href="#students" class="nav-item" data-tab="students">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+          <span>Students</span>
+        </a>
+      </li>
+      <li>
+        <a href="#ai" class="nav-item" data-tab="ai">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          <span>AI Assistant</span>
+        </a>
+      </li>
+      <li>
+        <a href="/docs" target="_blank" class="nav-item">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+          <span>Swagger API</span>
+        </a>
+      </li>
+    </ul>
+
+    <div class="sidebar-footer">
+      <div class="ai-status-indicator">
+        <span class="status-dot" id="ai-status-dot"></span>
+        <span id="ai-status-text">Checking AI engine...</span>
+      </div>
+      <div>EWB Edu Tech Internship</div>
+      <div style="font-size: 0.72rem; margin-top: 2px;">EduSphere v1.0.0</div>
+    </div>
+  </aside>
+
+  <!-- Main Content Body -->
+  <main class="main-content">
+    <!-- Top Header -->
+    <header class="top-header">
+      <div class="header-title-wrap">
+        <h2 id="page-title">Executive Dashboard</h2>
+        <p id="page-subtitle">Overview of student records, course distribution, and metrics</p>
+      </div>
+
+      <div class="header-actions">
+        <button class="btn btn-secondary btn-sm" id="btn-reseed-sample" title="Repopulate sample records">
+          <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+          <span>Reset Sample Data</span>
+        </button>
+
+        <button class="btn btn-primary" id="btn-add-student-global">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4"/></svg>
+          <span>Add Student</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <div class="content-area">
+
+      <!-- ========================================================= -->
+      <!-- SECTION 1: DASHBOARD -->
+      <!-- ========================================================= -->
+      <section class="section-pane active" id="dashboard-section">
+        <!-- KPI Cards Grid -->
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <div class="kpi-icon-wrap kpi-icon-teal">
+              <svg width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+            </div>
+            <div class="kpi-details">
+              <h3>Total Registered</h3>
+              <div class="kpi-value" id="kpi-total-students">0</div>
+              <div class="kpi-subtext">Active student records</div>
+            </div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-icon-wrap kpi-icon-mint">
+              <svg width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+            </div>
+            <div class="kpi-details">
+              <h3>Distinct Courses</h3>
+              <div class="kpi-value" id="kpi-total-courses">0</div>
+              <div class="kpi-subtext">Academic disciplines</div>
+            </div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-icon-wrap kpi-icon-sky">
+              <svg width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            </div>
+            <div class="kpi-details">
+              <h3>Recent Additions</h3>
+              <div class="kpi-value" id="kpi-recent-count">0</div>
+              <div class="kpi-subtext">Last 5 records</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dashboard Two-Column Grid -->
+        <div class="dashboard-grid">
+          <!-- Recent Students Table Card -->
+          <div class="content-card">
+            <div class="card-header">
+              <h3>Recently Enrolled Students</h3>
+              <a href="#students" class="btn btn-outline-teal btn-sm" onclick="document.querySelector('[data-tab=students]').click();">View All</a>
+            </div>
+            <div class="table-responsive">
+              <table class="custom-table">
+                <thead>
+                  <tr>
+                    <th>Student</th>
+                    <th>Course</th>
+                    <th>Date of Birth</th>
+                    <th>Contact</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="recent-students-tbody">
+                  <!-- Injected via JavaScript -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Course Distribution Card -->
+          <div class="content-card">
+            <div class="card-header">
+              <h3>Course Distribution</h3>
+            </div>
+            <div class="card-body">
+              <div class="course-dist-list" id="course-distribution-list">
+                <!-- Injected via JavaScript -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================= -->
+      <!-- SECTION 2: STUDENTS DIRECTORY -->
+      <!-- ========================================================= -->
+      <section class="section-pane" id="students-section">
+        <!-- Search and Filter Bar -->
+        <div class="filter-bar">
+          <div class="search-box">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            <input type="text" id="student-search-input" placeholder="Search by student name, ID, email, or phone..." autocomplete="off">
+          </div>
+
+          <div class="filter-controls">
+            <select class="select-filter" id="course-filter-select">
+              <option value="">All Courses</option>
+            </select>
+
+            <button class="btn btn-primary" onclick="document.getElementById('btn-add-student-global').click()">
+              <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4"/></svg>
+              <span>New Student</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Student Data Table Card -->
+        <div class="content-card">
+          <div class="table-responsive">
+            <table class="custom-table">
+              <thead>
+                <tr>
+                  <th class="sortable" data-col="full_name">Student &amp; ID &#x21C5;</th>
+                  <th class="sortable" data-col="course">Course &#x21C5;</th>
+                  <th class="sortable" data-col="date_of_birth">Date of Birth &#x21C5;</th>
+                  <th>Contact Details</th>
+                  <th class="sortable" data-col="enrollment_date">Enrolled &#x21C5;</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="students-table-body">
+                <!-- Injected via JavaScript -->
+              </tbody>
+            </table>
+          </div>
+
+          <div class="pagination-wrap" id="table-pagination-wrap">
+            <div id="pagination-info">Showing 0-0 of 0 students</div>
+            <div class="pagination-controls">
+              <button class="btn btn-secondary btn-sm" id="btn-prev-page">&larr; Previous</button>
+              <button class="btn btn-secondary btn-sm" id="btn-next-page">Next &rarr;</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================= -->
+      <!-- SECTION 3: AI ASSISTANT -->
+      <!-- ========================================================= -->
+      <section class="section-pane" id="ai-section">
+        <div class="ai-chat-container">
+          <!-- Chat Header Bar -->
+          <div class="ai-header-bar">
+            <div class="ai-header-title">
+              <div class="ai-pulse-icon">
+                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+              </div>
+              <div>
+                <h3 style="font-size: 1rem; font-weight: 700; color: var(--text-main);">EduSphere Assistant</h3>
+                <p style="font-size: 0.75rem; color: var(--text-muted);">Grounded answers from SQLite &bull; Optional Ollama LLM integration</p>
+              </div>
+            </div>
+
+            <div class="ai-model-pill offline" id="ai-header-model-pill">
+              Checking Model...
+            </div>
+          </div>
+
+          <!-- Chat History -->
+          <div class="chat-history" id="chat-history">
+            <div class="chat-message assistant">
+              <div class="avatar" style="background-color: var(--mint-light); color: var(--mint-primary);">AI</div>
+              <div class="chat-bubble">
+                <p>Hello! I am <strong>EduSphere Assistant</strong>, your intelligent student management assistant.</p>
+                <p>I can answer questions grounded strictly in your live SQLite student records, such as:</p>
+                <ul>
+                  <li>Student counts &amp; enrollment summaries</li>
+                  <li>Filter students by course or birth year</li>
+                  <li>Search contact information by email or phone</li>
+                  <li>Academic distribution statistics</li>
+                </ul>
+                <p style="margin-top: 8px;">Try clicking any suggested prompt below or type your question!</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Suggested Prompts -->
+          <div class="quick-prompts-bar">
+            <button class="prompt-pill" data-query="How many students are registered?">💬 How many students are registered?</button>
+            <button class="prompt-pill" data-query="Show students enrolled in Computer Science.">💬 Show students in Computer Science</button>
+            <button class="prompt-pill" data-query="Which students were born after 2005?">💬 Born after 2005</button>
+            <button class="prompt-pill" data-query="Summarize the student distribution by course.">💬 Summarize course distribution</button>
+            <button class="prompt-pill" data-query="Find students using aarav.sharma@example.com">💬 Find by email</button>
+          </div>
+
+          <!-- Input Bar -->
+          <div class="chat-input-bar">
+            <input type="text" id="chat-input" placeholder="Ask a question about students, courses, or enrollments..." autocomplete="off">
+            <button class="btn btn-primary" id="btn-send-chat">
+              <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+              <span>Ask AI</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<!-- ========================================================= -->
+<!-- MODAL: ADD / EDIT STUDENT -->
+<!-- ========================================================= -->
+<div class="modal-overlay" id="student-form-modal">
+  <div class="modal-dialog">
+    <div class="modal-header">
+      <h3 id="modal-title">Add New Student</h3>
+      <button class="btn-icon btn-secondary" id="btn-close-modal">&times;</button>
+    </div>
+    <form id="student-form">
+      <div class="modal-body">
+        <div class="form-grid">
+          <!-- Student ID -->
+          <div class="form-group col-span-2">
+            <label class="form-label" for="field-student-id">
+              <span>Student ID <span class="required">*</span></span>
+              <span class="form-hint">Unique alphanumeric identifier</span>
+            </label>
+            <div class="id-input-wrap">
+              <input type="text" id="field-student-id" class="form-input" placeholder="e.g. STU-2025-011" maxlength="50" required>
+              <button type="button" class="btn btn-secondary btn-sm" id="btn-generate-id">Auto Generate</button>
+            </div>
+            <div class="field-error-msg" id="field-student-id-error"></div>
+          </div>
+
+          <!-- Full Name -->
+          <div class="form-group col-span-2">
+            <label class="form-label" for="field-full-name">
+              <span>Full Name <span class="required">*</span></span>
+            </label>
+            <input type="text" id="field-full-name" class="form-input" placeholder="e.g. Aarav Sharma" maxlength="100" required>
+            <div class="field-error-msg" id="field-full-name-error"></div>
+          </div>
+
+          <!-- Date of Birth -->
+          <div class="form-group">
+            <label class="form-label" for="field-dob">
+              <span>Date of Birth <span class="required">*</span></span>
+            </label>
+            <input type="date" id="field-dob" class="form-input" required>
+            <div class="field-error-msg" id="field-dob-error"></div>
+          </div>
+
+          <!-- Course -->
+          <div class="form-group">
+            <label class="form-label" for="field-course">
+              <span>Course / Major</span>
+            </label>
+            <input type="text" id="field-course" class="form-input" list="course-suggestions" placeholder="e.g. Computer Science">
+            <datalist id="course-suggestions">
+              <option value="Computer Science">
+              <option value="Artificial Intelligence">
+              <option value="Data Science">
+              <option value="Electronics & Communication">
+              <option value="Mechanical Engineering">
+              <option value="Business Analytics">
+              <option value="Information Technology">
+            </datalist>
+            <div class="field-error-msg" id="field-course-error"></div>
+          </div>
+
+          <!-- Email -->
+          <div class="form-group">
+            <label class="form-label" for="field-email">
+              <span>Email Address</span>
+              <span class="form-hint">At least email or phone</span>
+            </label>
+            <input type="email" id="field-email" class="form-input" placeholder="student@example.com">
+            <div class="field-error-msg" id="field-email-error"></div>
+          </div>
+
+          <!-- Phone -->
+          <div class="form-group">
+            <label class="form-label" for="field-phone">
+              <span>Phone Number</span>
+              <span class="form-hint">e.g. +91 9876543210</span>
+            </label>
+            <input type="tel" id="field-phone" class="form-input" placeholder="+91 9876543210">
+            <div class="field-error-msg" id="field-phone-error"></div>
+          </div>
+
+          <!-- Enrollment Date -->
+          <div class="form-group col-span-2">
+            <label class="form-label" for="field-enrollment-date">
+              <span>Enrollment Date</span>
+            </label>
+            <input type="date" id="field-enrollment-date" class="form-input">
+            <div class="field-error-msg" id="field-enrollment-date-error"></div>
+          </div>
+
+          <!-- Address -->
+          <div class="form-group col-span-2">
+            <label class="form-label" for="field-address">
+              <span>Residential Address</span>
+            </label>
+            <textarea id="field-address" class="form-textarea" rows="2" placeholder="Full residential street address, city, state"></textarea>
+            <div class="field-error-msg" id="field-address-error"></div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="btn-cancel-modal">Cancel</button>
+        <button type="submit" class="btn btn-primary" id="btn-save-student">Save Student Record</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ========================================================= -->
+<!-- MODAL: VIEW STUDENT PROFILE -->
+<!-- ========================================================= -->
+<div class="modal-overlay" id="student-profile-modal">
+  <div class="modal-dialog">
+    <div class="modal-header">
+      <h3>Student Profile</h3>
+      <button class="btn-icon btn-secondary" id="btn-close-profile-modal">&times;</button>
+    </div>
+    <div class="modal-body" id="profile-modal-content">
+      <!-- Injected via JavaScript -->
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" id="btn-close-profile-btn">Close</button>
+      <button type="button" class="btn btn-outline-teal" id="btn-edit-from-profile">Edit Details</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========================================================= -->
+<!-- MODAL: DELETE CONFIRMATION -->
+<!-- ========================================================= -->
+<div class="modal-overlay" id="delete-confirm-modal">
+  <div class="modal-dialog" style="max-width: 460px;">
+    <div class="modal-header">
+      <h3 style="color: var(--coral-danger);">Confirm Deletion</h3>
+    </div>
+    <div class="modal-body">
+      <p id="delete-student-name-text" style="color: var(--text-main); font-size: 0.95rem; line-height: 1.5;">
+        Are you sure you want to delete this student record? This action cannot be undone.
+      </p>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" id="btn-cancel-delete">Cancel</button>
+      <button type="button" class="btn btn-danger" id="btn-confirm-delete">Delete Record</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast Container -->
+<div class="toast-container" id="toast-container"></div>
+
+<script src="/static/js/app.js"></script>
+</body>
+</html>
