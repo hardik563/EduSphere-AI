@@ -8,7 +8,13 @@
 
 **EduSphere AI** is a production-grade, full-stack student records platform developed as part of the **Python/AI-ML internship at EWB Edu Tech Pvt. Ltd.** It pairs a high-performance **FastAPI** backend and **SQLite** database with an elegant, modern web interface and a local conversational **AI Assistant** grounded strictly in verifiable student data.
 
+
+<img width="1905" height="1040" alt="image" src="https://github.com/user-attachments/assets/b0b95891-1479-4c91-aaa3-55f9a57b7026" />
+
 ---
+
+<img width="1877" height="961" alt="image" src="https://github.com/user-attachments/assets/87803b17-836b-4f0a-ac17-aef7a0691bfc" />
+
 
 ## 📑 Table of Contents
 
@@ -27,6 +33,9 @@
 13. [Internship Submission Notes](#-internship-submission-notes)
 
 ---
+
+<img width="1860" height="910" alt="image" src="https://github.com/user-attachments/assets/1a1ed242-11e2-43eb-8443-0207920c8085" />
+
 
 ## 🌟 Project Overview
 
@@ -66,6 +75,9 @@ Managing student academic records should be fast, reliable, and intelligent. Edu
 
 ---
 
+
+<img width="1903" height="976" alt="image" src="https://github.com/user-attachments/assets/3cc93f67-a925-43b3-8269-79959b5b4177" />
+
 ## 🛠 Technology Stack
 
 | Layer | Technology | Purpose |
@@ -80,6 +92,9 @@ Managing student academic records should be fast, reliable, and intelligent. Edu
 | **AI Integration** | Ollama REST API (`llama3.2`, `mistral`, `phi3`) | Optional local LLM conversational reasoning |
 
 ---
+
+![Uploading image.png…]()
+
 
 ## 📂 Project Architecture & Directory Structure
 
